@@ -6,6 +6,10 @@ Icon?
 Thumbs.db
 *.DS_Store
 
+# AWS Key Files #
+#################
+*.pem
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

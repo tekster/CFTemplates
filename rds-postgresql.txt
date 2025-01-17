@@ -1,0 +1,52 @@
+install pgadmin locally
+https://www.pgadmin.org/download/pgadmin-4-macos/
+
+install psql (CLI interface with PostgreSQL)
+brew install postgresql@15
+echo 'export PATH="$PATH:/opt/homebrew/opt/postgresql@15/bin"' >> ~/.zshrc
+
+aws cloudformation create-stack --stack-name cfn-rds-demo --template-body file://rds-postgresql.yaml
+
+ALTER USER postgres WITH PASSWORD '${NewPassword}';
+
+-- Get to know you --
+https://pgexercises.com/gettingstarted.html
+https://neon.tech/postgresql/tutorial
+
+-- Get to know the system --
+
+https://forums.percona.com/t/deep-dive-into-postgresql-indexes-free-course-at-percona-university-online/8257
+Lesson 1: Overview
+Lesson 2: Heap vs Index
+Lesson 3: How to Create Indexes?
+Lesson 4: How to create an Expression Index?
+Lesson 5: Advantages of a Partial Index
+Lesson 6: Index Types: B-Tree
+Lesson 7: Index Types: What is the HASH Index?
+Lesson 8: Index Types: What is the BRIN Index?
+Lesson 9: Index Types: GIN and GIST
+Lesson 10: How to use different types of Indexes?
+Lesson 11: Index Only Scans
+Lesson 12: How to Find Duplicate Indexes?
+Lesson 13: Unused Indexes
+Course Quiz & Certificate of Completion
+
+-- internals
+* processes (PID:postresql, Postmaster, Writer, Stats Collector, Checkpointer, WAL writer, Logger, Archiver)
+* memory components (Shared, WAL, Vacuum, Work, Maintenance, Temp)
+* disk components (Data, WAL, Temp, Stats, Logs, WAL Archives)
+
+-- files
+* Configuration files
+  performance-tuning parameters
+  shared_buffers, wal_buffers, temp_buffers
+  max_locks_per_transaction, max_pred_locks_per_transaction
+  autovacuum_work_mem, autovacuum_max_workers
+  work_mem, maintenance_work_mem
+* write ahead logs
+* WAL log archiving
+
+-- monitoring
+* statistics monitoring
+* postgresql logs
+

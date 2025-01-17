@@ -2,7 +2,7 @@
 ## https://github.com/tekster/CFTemplates
 ## Create AWS/RDS/PostgreSQL demo instance 
 ## with baseline requirements
-## Dependency: "my-key-pair.pem" for EC2 connectivity
+## Optional: "my-key-pair.pem" for EC2 connectivity
 
 Parameters:
   AmiID:
@@ -11,7 +11,7 @@ Parameters:
     Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
 
 Resources:
- # Creating VPC
+ # Creating Dedicated VPC for RDS/PostgreSQL
   VPC:
     Type: AWS::EC2::VPC
     Properties:
@@ -22,7 +22,7 @@ Resources:
       - Key: Name
         Value:  "VPC-RDS"
 
-#Creating Internet Gateway
+#Creating Internet Gateway (free) for VPC
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     DependsOn: VPC
@@ -34,7 +34,7 @@ Resources:
       VpcId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
 
-#Creating Public Subnet
+#Creating Public Subnet (1)
   MySubnet1:
     Type: AWS::EC2::Subnet
     Properties:
@@ -46,7 +46,7 @@ Resources:
       - Key: "stage"
         Value: "demo"
 
-#Creating Public Subnet
+#Creating Public Subnet (2)
   MySubnet2:
     Type: AWS::EC2::Subnet
     Properties:
@@ -67,7 +67,7 @@ Resources:
       - Key: Name
         Value: "Public"
 
-#Creating Route in the route table and attaching Internet Gateway to it
+#Creating Route with full quad-zero access and attach Internet Gateway
   PublicRoute1:   
     Type: AWS::EC2::Route
     DependsOn: AttachGateway
@@ -102,8 +102,8 @@ Resources:
               CidrIp: '0.0.0.0/0'
   
 
-#Creating Security Group for our RDS Instance. Only 5432 port will be opened.
-  MyDBSecGroup:
+#Creating Security Group for our RDS Instance with port 5432 access
+  DemoDBSecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
         GroupDescription: Enable DB access via port 5432
@@ -115,15 +115,15 @@ Resources:
               CidrIp: '0.0.0.0/0'
 
 #Now launch an EC2 Instance to our newly created VPC
-  MyEC2:
-    Type: AWS::EC2::Instance
-    Properties:
-        ImageId: !Ref AmiID
-        InstanceType: 't2.micro'
-        SecurityGroupIds:
-          - !GetAtt "MySecGroup.GroupId"
-        KeyName: my-key-pair
-        SubnetId: !Ref MySubnet1
+#  MyEC2:
+#   Type: AWS::EC2::Instance
+#   Properties:
+#       ImageId: !Ref AmiID
+#       InstanceType: 't2.micro'
+#       SecurityGroupIds:
+#         - !GetAtt "MySecGroup.GroupId"
+#       KeyName: my-key-pair
+#       SubnetId: !Ref MySubnet1
 
 # Create SubnetGroup for RDS instance.
   DBSubnetGroup:
@@ -149,7 +149,7 @@ Resources:
     Type: 'AWS::RDS::DBInstance'
     Properties:
       DBName: demoDB  # Mention your database name
-      DBInstanceIdentifier: 'MyDB' # Provide name to your database instance.
+      DBInstanceIdentifier: 'CFDemo' # Provide name to your database instance.
       AllocatedStorage: '20'  # Provide size for your dabase. (in GB)
       DBInstanceClass: db.t4g.micro 
       Engine: postgres 
@@ -159,7 +159,7 @@ Resources:
       DBParameterGroupName: !Ref DBParamGroup
       PubliclyAccessible: true
       VPCSecurityGroups:
-          - !GetAtt "MyDBSecGroup.GroupId"
+          - !GetAtt "DemoDBSecGroup.GroupId"
 Outputs:
   DBInstanceEndpoint:
     Description: Endpoint to access the Postgres database

@@ -27,3 +27,8 @@ Filename: CodeBuildVPC.yaml
 
 > ssh -i "my-key-pair.pem" ec2-user@ec2-50-18-154-177.us-west-1.compute.amazonaws.com<br>
 > *get actual EC2 hostname from AWS console or EC2 Query*
+
+# == RDS Deployment == #
+**rds-postgresql.yaml:** created PostgreSQL 16 deployment with EC2 instance as connection point.  Uses all defaults as a demo database.
+
+> aws cloudformation create-stack --stack-name ec2-rds-example --template-body file://rds-postgresql.yaml

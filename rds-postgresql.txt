@@ -1,3 +1,6 @@
+#  notes for RDS/PostreSQL deployment 
+#  references: https://github.com/aws-cloudformation/aws-cloudformation-templates/tree/main/RDS
+
 install pgadmin locally
 https://www.pgadmin.org/download/pgadmin-4-macos/
 

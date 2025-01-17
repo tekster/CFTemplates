@@ -21,6 +21,15 @@ Resources:
       Tags:
       - Key: Name
         Value:  "VPC-RDS"
+  MyRDSSecrets:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: 'Store password securely'
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "postgres"}'
+        GenerateStringKey: 'password'
+        PasswordLength: 12
+        ExcludeCharacters: '"@/\'
 
 #Creating Internet Gateway (free) for VPC
   InternetGateway:
@@ -114,17 +123,6 @@ Resources:
               ToPort: '5432'
               CidrIp: '0.0.0.0/0'
 
-#Now launch an EC2 Instance to our newly created VPC
-#  MyEC2:
-#   Type: AWS::EC2::Instance
-#   Properties:
-#       ImageId: !Ref AmiID
-#       InstanceType: 't2.micro'
-#       SecurityGroupIds:
-#         - !GetAtt "MySecGroup.GroupId"
-#       KeyName: my-key-pair
-#       SubnetId: !Ref MySubnet1
-
 # Create SubnetGroup for RDS instance.
   DBSubnetGroup:
     Type: 'AWS::RDS::DBSubnetGroup'
@@ -153,8 +151,8 @@ Resources:
       AllocatedStorage: '20'  # Provide size for your dabase. (in GB)
       DBInstanceClass: db.t4g.micro 
       Engine: postgres 
-      MasterUsername: 'postgres' 
-      MasterUserPassword: 'PassMe123'
+      MasterUsername: !Join ['', ['{{resolve:secretsmanager:', !Ref MyRDSSecrets, ':SecretString:username}}' ]]
+      MasterUserPassword: !Join ['', ['{{resolve:secretsmanager:', !Ref MyRDSSecrets, ':SecretString:password}}' ]]
       DBSubnetGroupName: !Ref DBSubnetGroup
       DBParameterGroupName: !Ref DBParamGroup
       PubliclyAccessible: true

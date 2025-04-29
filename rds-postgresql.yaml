@@ -137,7 +137,7 @@ Resources:
     Type: 'AWS::RDS::DBParameterGroup'
     Properties:
       Description: Database Parameter Group + pg_stat_statements
-      Family: 'postgres16'
+      Family: 'postgres17'
       Parameters:
         shared_preload_libraries: pg_stat_statements
 

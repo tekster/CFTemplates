@@ -32,3 +32,9 @@ Filename: CodeBuildVPC.yaml
 **rds-postgresql.yaml:** created PostgreSQL 16 deployment with EC2 instance as connection point.  Uses all defaults as a demo database.
 
 > aws cloudformation create-stack --stack-name ec2-rds-example --template-body file://rds-postgresql.yaml
+
+database credentials found in [AWS Secrets Manager](https://us-west-1.console.aws.amazon.com/secretsmanager/listsecrets?region=us-west-1) <br>
+```psql -H cfdemo.cvf3het7fmyg.us-west-1.rds.amazonaws.com -d demoDB -U postgres``` <br>
+*AWS Secret Password: <SD3d(4F>(p[*
+
+
